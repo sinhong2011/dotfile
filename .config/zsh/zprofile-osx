@@ -1,0 +1,22 @@
+# eval "$(/opt/homebrew/bin/brew shellenv)"
+
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=/Users/niskan516/.local/bin:$PATH
+
+# Added by Toolbox App
+export PATH="$PATH:/Users/niskan516/Library/Application Support/JetBrains/Toolbox/scripts"
+
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/ruby/include"
+
+# fnm
+export PATH=/Users/niskan516/.fnm:$PATH
+
+# Java Home
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export JAVA_HOME=$(/usr/libexec/java_home -v 19)
+
+# pnpm Path
+export PNPM_HOME="/Users/niskan516/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
