@@ -34,25 +34,15 @@ if has starship; then
   _evalcache starship init zsh
 else
   curl -sS https://starship.rs/install.sh | sh
-fi
-
-if has rbenv; then
-  _evalcache rbenv init - zsh
-fi
-
-# cache eval fnm
-if has fnm; then
-  _evalcache fnm env --use-on-cd
+  _evalcache starship init zsh
 fi
 
 if has /opt/homebrew/bin/brew; then
   _evalcache /opt/homebrew/bin/brew shellenv
+else
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  _evalcache /opt/homebrew/bin/brew shellenv
 fi
-
-# the detailed meaning of the below three variable can be found in `man zshparam`.
-export HISTFILE=~/.histfile
-export HISTSIZE=10000 # the number of items for the internal history list
-export SAVEHIST=10000 # maximum number of items for the history file
 
 # The meaning of these options can be found in man page of `zshoptions`.
 setopt HIST_IGNORE_ALL_DUPS    # do not put duplicated command into history list
@@ -73,3 +63,36 @@ alias vi='lvim'
 alias vim='lvim'
 alias python="python3"
 alias ws='webstorm'
+
+# the detailed meaning of the below three variable can be found in `man zshparam`.
+export HISTFILE=~/.histfile
+export HISTSIZE=10000 # the number of items for the internal history list
+export SAVEHIST=10000 # maximum number of items for the history file
+
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=${HOME}/.local/bin:$PATH
+
+# Setup Ruby
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/ruby/include"
+
+if has rbenv; then
+  _evalcache rbenv init - zsh
+fi
+
+# fnm
+export PATH=${HOME}/.fnm:$PATH
+
+# cache eval fnm
+if has fnm; then
+  _evalcache fnm env --use-on-cd
+fi
+
+# Java Home
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export JAVA_HOME=$(/usr/libexec/java_home -v 19)
+
+# pnpm Path
+export PNPM_HOME="${HOME}/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
