@@ -30,6 +30,17 @@ zi load djui/alias-tips
 zi load ael-code/zsh-colored-man-pages
 zi load chrissicool/zsh-256color
 
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=${HOME}/.local/bin:$PATH
+# fnm
+export PATH=${HOME}/.local/share/fnm:$PATH
+
+if ! has "rustc"; then
+  echo "rust is not installed."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  source "$HOME/.cargo/env"
+fi
+
 if has starship; then
   _evalcache starship init zsh
 else
@@ -37,12 +48,16 @@ else
   _evalcache starship init zsh
 fi
 
-if has /opt/homebrew/bin/brew; then
-  _evalcache /opt/homebrew/bin/brew shellenv
-else
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  _evalcache /opt/homebrew/bin/brew shellenv
+if ! has "nvim"; then
+  echo "nvim is not installed."
+  sudo pacman -S neovim
 fi
+
+# if not installed, install lunarvim
+if ! has "lvim"; then
+  LV_BRANCH='release-1.2/neovim-0.8' bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/fc6873809934917b470bff1b072171879899a36b/utils/installer/install.sh)
+fi
+
 
 # The meaning of these options can be found in man page of `zshoptions`.
 setopt HIST_IGNORE_ALL_DUPS    # do not put duplicated command into history list
@@ -53,15 +68,9 @@ setopt EXTENDED_HISTORY        # record command start time
 
 # show all the history stored.
 alias history="fc -l 1"
-
-alias la="colorls -la"
-alias ls='colorls'
-alias lt="colorls --tree=1 -l"
-alias lcs='colorls -lA --sd'
 alias ssh="ssh -v"
 alias vi='lvim'
 alias vim='lvim'
-alias python="python3"
 alias ws='webstorm'
 
 # the detailed meaning of the below three variable can be found in `man zshparam`.
@@ -69,30 +78,29 @@ export HISTFILE=~/.histfile
 export HISTSIZE=10000 # the number of items for the internal history list
 export SAVEHIST=10000 # maximum number of items for the history file
 
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH
-export PATH=${HOME}/.local/bin:$PATH
 
-# Setup Ruby
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/ruby/include"
-
-if has rbenv; then
-  _evalcache rbenv init - zsh
-fi
-
-# fnm
-export PATH=${HOME}/.fnm:$PATH
 
 # cache eval fnm
 if has fnm; then
   _evalcache fnm env --use-on-cd
+else
+  curl -fsSL https://fnm.vercel.app/install | bash
+  _evalcache fnm env --use-on-cd
 fi
 
-# Java Home
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export JAVA_HOME=$(/usr/libexec/java_home -v 19)
 
-# pnpm Path
-export PNPM_HOME="${HOME}/Library/pnpm"
-export PATH="$PNPM_HOME:$PATH"
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/niskan516/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/niskan516/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/niskan516/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/niskan516/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
